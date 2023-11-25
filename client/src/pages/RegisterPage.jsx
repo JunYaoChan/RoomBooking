@@ -1,14 +1,26 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  function registerUser(e) {
-    e.preventDefault();
-    axios.get("http://localhost:4000/test");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  async function registerUser(ev) {
+    ev.preventDefault();
+    try {
+      await axios.post("/register", {
+        name,
+        email,
+        password,
+      });
+      alert("Registration successful. Now you can log in");
+      navigate("/login");
+    } catch (e) {
+      alert("Registration failed. Please try again later");
+    }
   }
   return (
     <div className="mt-4 grow flex items-center justify-around">
@@ -17,7 +29,7 @@ export default function RegisterPage() {
         <form className="max-w-md mx-auto" onSubmit={registerUser}>
           <input
             type="text"
-            placeholder="username"
+            placeholder="John Doe"
             value={name}
             onChange={(ev) => setName(ev.target.value)}
           />
@@ -35,7 +47,7 @@ export default function RegisterPage() {
           />
           <button className="primary">Register</button>
           <div className="text-center py-2 text-gray-500">
-            Already Remember?{" "}
+            Already a member?{" "}
             <Link className="underline text-black" to={"/login"}>
               Login
             </Link>
